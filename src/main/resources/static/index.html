@@ -1,25 +1,69 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-        <title>Jumpydoll Spring Boot app</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="/recipes/app.css">
+        <script src="/recipes/index.js"></script>
+        <title>Recipes App</title>
     </head>
     <body>
-        <div class="container">
-            <h2 class="text-center mt-2">Welcome to your new Spring Boot web service.</h2>
-            To start building, check out one of our guides below:
-            <ul>
-                <li>
-                    <a href="https://jumpydoll.com/docs/quickstart/java" target="_blank" rel="noreferrer noopener">
-                        Quick start guide
-                    </a>
-                </li>
-                <li>
-                    <a href="https://jumpydoll.com/docs/tutorials/java-tutorial" target="_blank" rel="noreferrer noopener">
-                        Spring Boot tutorial (To-do list)
-                    </a>
-                </li>
-            </ul>
+        <main>
+
+            <div class="search-box">
+                <div class="search-container container">
+                    <h1 class="text-center mt-2" id="search-header">Recipes</h1>
+                    <form id="search-form">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Chicken, pasta, etc." aria-label="Recipes" aria-describedby="button-addon2" id="search-box" value="chicken">
+                            <button class="btn btn-primary" type="submit" id="button-addon2">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <ul id="recipes" class="list-group">
+                </ul>
+            </div>
+            <div class="modal fade" tabindex="-1" id="shopping-list-modal">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h3 class="modal-title">Shopping list</h3>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="shopping-list">
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </main>
+        <div id="saved-recipes-container" class="shadow-sm">
+            <div role="button" id="saved-recipes-header" class="p-2 bg-primary">
+                <h5 id="saved-recipes-header-text">Recipes (0)</h5>
+                <i id="saved-recipes-expand-button" class="bi bi-chevron-down"></i>
+            </div>
+            <div id="saved-recipes">
+                <p class="p-2 mb-0">No recipes added</p>
+                <ul class="mb-0 d-none list-group" id="saved-recipes-list">
+                </ul>
+                <button class="btn btn-light d-none my-1" id="shopping-list-button">
+                    Generate shopping list
+                </button>
+            </div>
         </div>
+        <template id="recipe-list-item-template">
+            <li class="list-group-item">
+                <span></span>
+                <button class="btn btn-light btn-sm add-button">Add to list</button>
+            </li>
+        </template>
+        <template id="saved-recipe-item-template">
+            <li class="list-group-item recipe-list-item">
+                <span style="flex-grow: 1;"></span>
+                <button class="btn btn-sm">Delete</button>
+            </li>
+        </template>
     </body>
 </html>
