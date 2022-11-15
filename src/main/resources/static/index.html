@@ -16,15 +16,25 @@
                     <h1 class="text-center mt-2" id="search-header">Recipes</h1>
                     <form id="search-form">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Chicken, pasta, etc." aria-label="Recipes" aria-describedby="button-addon2" id="search-box" value="chicken">
+                            <input type="text" class="form-control" placeholder="Chicken, soup, etc." aria-label="Recipes" aria-describedby="button-addon2" id="search-box">
                             <button class="btn btn-primary" type="submit" id="button-addon2">Search</button>
                         </div>
                     </form>
                 </div>
+                <div id="info" class="px-1">
+                    Data provided by <a href="https://themealdb.com" target="_blank" noopener noreferrer>TheMealDB.com</a>.
+                    Splash image by <a href="https://unsplash.com/@lvnatikk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"i target="_blank" noopener noreferrer>Lily Banse</a> 
+                    on <a target="_blank" noopener noreferrer href="https://unsplash.com/s/photos/food?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>.
+                </div>
             </div>
-            <div class="container">
+            <div class="container-lg mb-3">
+                <!--
                 <ul id="recipes" class="list-group">
                 </ul>
+                -->
+                <div class="row g-3" id="recipes">
+
+                </div>
             </div>
             <div class="modal fade" tabindex="-1" id="shopping-list-modal">
                 <div class="modal-dialog">
@@ -37,14 +47,14 @@
                     </div>
                   </div>
                 </div>
-              </div>
+            </div>
         </main>
-        <div id="saved-recipes-container" class="shadow-sm">
+        <div id="saved-recipes-container" class="shadow">
             <div role="button" id="saved-recipes-header" class="p-2 bg-primary">
                 <h5 id="saved-recipes-header-text">Recipes (0)</h5>
                 <i id="saved-recipes-expand-button" class="bi bi-chevron-down"></i>
             </div>
-            <div id="saved-recipes">
+            <div id="saved-recipes" class="saved-recipes-grow">
                 <p class="p-2 mb-0">No recipes added</p>
                 <ul class="mb-0 d-none list-group" id="saved-recipes-list">
                 </ul>
@@ -53,6 +63,19 @@
                 </button>
             </div>
         </div>
+        <template id="recipe-card-template">
+            <div class="col-xs-12 col-sm-4 col-md-3">
+                <div class="card">
+                    <img class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text"></p>
+                        <button class="btn btn-light save-button">Add to list</button>
+                        <a target="_blank" noopenner noreferrer class="btn btn-primary view-recipe-button">View recipe</a>
+                    </div>
+                </div>
+            </div>
+        </template>
         <template id="recipe-list-item-template">
             <li class="list-group-item">
                 <span></span>

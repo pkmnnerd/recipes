@@ -15,6 +15,7 @@ function init() {
 
   const recipeItemTemplate = document.getElementById('recipe-list-item-template')
   const savedRecipeItemTemplate = document.getElementById('saved-recipe-item-template')
+  const recipeCardTemplate = document.getElementById('recipe-card-template')
 
   window.customElements.define('recipe-item', class extends HTMLElement {
     constructor() {
@@ -26,6 +27,19 @@ function init() {
         saveRecipe(this.getAttribute('data-name'), this.getAttribute('data-id'));
       })
       this.querySelector('span').innerText = this.getAttribute('data-name');
+    }
+  });
+
+  window.customElements.define('recipe-card', class extends HTMLElement {
+    constructor() {
+      super();
+    }
+    connectedCallback() {
+      this.appendChild(recipeCardTemplate.content.cloneNode(true));
+      this.querySelector('save-button').addEventListener('click', () => {
+        saveRecipe(this.getAttribute('data-name'), this.getAttribute('data-id'));
+      })
+      this.querySelector('.card-title').innerText = this.getAttribute('data-name');
     }
   });
 
@@ -46,14 +60,13 @@ function init() {
 function toggleSavedRecipes() {
   const icon = document.getElementById('saved-recipes-expand-button');
   const savedRecipesContainer = document.getElementById('saved-recipes');
-  if (savedRecipesContainer.style.height === "0px") {
-    icon.classList.toggle("bi-chevron-up");
-    icon.classList.toggle("bi-chevron-down");
-    savedRecipesContainer.style.height = "auto";
+  console.log(savedRecipesContainer.classList);
+  if (savedRecipesContainer.style.height === '0px') {
+    icon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+    savedRecipesContainer.style.height = 'auto';
   } else {
-    icon.classList.toggle("bi-chevron-up");
-    icon.classList.toggle("bi-chevron-down");
-    savedRecipesContainer.style.height = "0px";
+    icon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+    savedRecipesContainer.style.height = '0px';
   }
 }
 
@@ -111,10 +124,23 @@ async function onSearch(term) {
     const recipesList = document.getElementById('recipes');
     recipesList.replaceChildren();
     results.forEach((recipe) => {
-      const recipeItem = document.createElement('recipe-item');
+
+      const recipeCard = document.getElementById('recipe-card-template').content.cloneNode(true);
+      recipeCard.querySelector('.card-title').innerText = recipe.name;
+      recipeCard.querySelector('.card-text').innerText = `${recipe.category} - ${recipe.region}`;
+      recipeCard.querySelector('.save-button').addEventListener('click', () => {
+        saveRecipe(recipe.name, recipe.id);
+      })
+      recipeCard.querySelector('.view-recipe-button').href=`https://www.themealdb.com/meal.php?c=${recipe.id}`;
+      recipeCard.querySelector('img').src = recipe.imageLink;
+      recipeCard.querySelector('img').alt = recipe.name;
+      recipesList.appendChild(recipeCard);
+      /*
+      const recipeItem = document.createElement('recipe-card');
       recipeItem.setAttribute('data-name', recipe.name);
       recipeItem.setAttribute('data-id', recipe.id);
       recipesList.appendChild(recipeItem);
+      */
     });
   } else {
     const recipesContainer = document.getElementById('recipes');
@@ -124,23 +150,26 @@ async function onSearch(term) {
 }
 
 async function onGenerateShoppingList() {
+  const modalContent = document.getElementById('shopping-list')
+  modalContent.replaceChildren();
   const shoppingListModal = new bootstrap.Modal(document.getElementById('shopping-list-modal'));
   shoppingListModal.show()
+
   const recipeIds = Array.from(savedRecipes.keys()).join(',');
-  console.log(recipeIds);
   const response = await fetch(`/recipes/api/shoppinglist?recipeIds=${recipeIds}`);
 
-  const modalContent = document.getElementById('shopping-list')
   if (response.ok) {
     const results = await response.json();
-    modalContent.replaceChildren();
     const shoppingList = [...results.shoppingList];
     shoppingList.sort((a, b) => a.ingredientName.localeCompare(b.ingredientName));
+    const listElement = document.createElement('ul');
     shoppingList.forEach(({ ingredientName, quantities }) => {
-      const shoppingListItem = document.createElement('p');
+      const shoppingListItem = document.createElement('li');
+      shoppingListItem.classList.add('mb-1');
       shoppingListItem.innerText = `${ingredientName} - ${quantities.join(' + ')}`;
-      modalContent.appendChild(shoppingListItem);
+      listElement.appendChild(shoppingListItem);
     });
+    modalContent.appendChild(listElement);
 
   } else {
     modalContent.innerHTML = `<div class="alert alert-danger" role="alert">${response.status}: ${response.statusText}</div>`;

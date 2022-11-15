@@ -34,7 +34,9 @@ public class RecipesController {
                 "Breakfast",
                 "American",
                 cerealIngredients,
-                "Step 1: Pour the cereal into a bowl\n Step 2: Pour the milk into the bowl\nStep 3: Enjoy!"
+                "Step 1: Pour the cereal into a bowl\n Step 2: Pour the milk into the bowl\nStep 3: Enjoy!",
+                "https://images.unsplash.com/photo-1588710920403-dacfbae1a640?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80",
+                null
         );
         response.add(cereal);
         return response;
@@ -47,6 +49,9 @@ public class RecipesController {
                 .build();
         HttpResponse<String> searchResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonObject mealDbResponse = JsonParser.parseString(searchResponse.body()).getAsJsonObject();
+        if (mealDbResponse.get("meals").isJsonNull()) {
+            return Collections.emptyList();
+        }
         JsonArray mealDbRecipes = mealDbResponse.getAsJsonArray("meals");
 
         List<Recipe> recipes = new ArrayList<>();
@@ -56,7 +61,9 @@ public class RecipesController {
             String name = mealDbRecipeObj.get("strMeal").getAsString();
             String category = mealDbRecipeObj.get("strCategory").getAsString();
             String region = mealDbRecipeObj.get("strArea").getAsString();
-            String instructions =mealDbRecipeObj.get("strInstructions").getAsString();
+            String instructions = mealDbRecipeObj.get("strInstructions").getAsString();
+            String imageLink = mealDbRecipeObj.get("strMealThumb").getAsString();
+            String videoLink = mealDbRecipeObj.get("strYoutube").isJsonNull() ? mealDbRecipeObj.get("strYoutoube").getAsString() : null;
             List<String> ingredients = new ArrayList<>();
             for (int i = 1; i <= 20; i++) {
                 String ingredientPropertyName = String.format("strIngredient%d", i);
@@ -69,7 +76,7 @@ public class RecipesController {
                     }
                 }
             }
-            Recipe recipe = new Recipe(id, name, category, region, ingredients, instructions);
+            Recipe recipe = new Recipe(id, name, category, region, ingredients, instructions, imageLink, videoLink);
             recipes.add(recipe);
         }
         return recipes;
